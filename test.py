@@ -2,19 +2,15 @@
 # the screen.
 # Author: Tony DiCola
 # License: Public Domain
-	
 import time
-import Adafruit_PCA9685
+
+# Import the ADS1x15 module.
 import Adafruit_ADS1x15
+
 
 # Create an ADS1115 ADC (16-bit) instance.
 adc = Adafruit_ADS1x15.ADS1115()
-pwm = Adafruit_PCA9685.PCA9685()
 
-servo_min = 150  
-servo_max = 600 
-
-pwm.set_pwm_freq(60)
 # Or create an ADS1015 ADC (12-bit) instance.
 #adc = Adafruit_ADS1x15.ADS1015()
 
@@ -33,9 +29,10 @@ pwm.set_pwm_freq(60)
 # See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
 GAIN = 1
 
-def arduino_map(x, in_min, in_max, out_min, out_max):
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
-
+print('Reading ADS1x15 values, press Ctrl-C to quit...')
+# Print nice channel column headers.
+print('| {0:>6} | {1:>6} | {2:>6} | {3:>6} |'.format(*range(4)))
+print('-' * 37)
 # Main loop.
 while True:
     # Read all the ADC channel values in a list.
@@ -51,4 +48,6 @@ while True:
         # Each value will be a 12 or 16 bit signed integer value depending on the
         # ADC (ADS1015 = 12-bit, ADS1115 = 16-bit).
     # Print the ADC values.
-    pwm.set_pwm(0, 0, int(arduino_map(int(adc.read_adc(0, gain=1)), 0, 32752, servo_min, servo_max)))
+    print('| {0:>6} | {1:>6} | {2:>6} | {3:>6} |'.format(*values))
+    # Pause for half a second.
+    time.sleep(0.5)
